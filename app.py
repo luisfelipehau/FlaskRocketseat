@@ -34,11 +34,26 @@ def get_tasks():
 
 @app.route("/tasks/<int:id>", methods=["GET"])
 def get_task(id):
-    for task in tasks:
-        if task.id == id:
-            return jsonify(task.to_dict())
-
+    for t in tasks:
+        if t.id == id:
+            return jsonify(t.to_dict())
     return jsonify({"message": "Não foi possível encontrar a atividade"}), 404
+
+
+@app.route("/tasks/<int:id>", methods=["PUT"])
+def update_task(id):
+    task = None
+    for t in tasks:
+        if t.id == id:
+            task = t
+    if task == None:
+        return jsonify({"message": "Não foi possível encontrar a atividade"}), 404
+
+    data = request.get_json()
+    task.title = data["title"]
+    task.description = data["description"]
+    task.completed = data["completed"]
+    return jsonify({"message": "Tarefa atualizada com sucesso"})
 
 
 if __name__ == "__main__":
